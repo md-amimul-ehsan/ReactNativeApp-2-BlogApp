@@ -36,7 +36,7 @@ const getDataJSON = async (key) => {
       const jsonData = JSON.parse(data);
       return jsonData;
     } else {
-      alert("Invalid Information!");
+      //alert("Invalid Information!");
     }
   } catch (error) {
     alert(error);

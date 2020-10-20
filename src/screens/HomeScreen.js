@@ -1,19 +1,33 @@
 import React, { useState } from "react";
-import { ScrollView, View, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import {
   Card,
   Button,
-  Text,
-  Avatar,
   Input,
   Header,
 } from "react-native-elements";
-import { AntDesign, Entypo } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
+import moment from "moment";
+
+import PostCard from '../components/PostCard';
 import { AuthContext } from "../providers/AuthProvider";
+import { getDataJSON, storeDataJSON } from "../functions/AsyncStorageFunctions"; 
+
 
 const HomeScreen = (props) => {
-  const post =
-  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.";
+  const [newPostText, setNewPostText] = useState("");
+  const [name, setName] = useState("");
+  const [date, setDate] = useState("");
+  const [post, setPost] = useState("");
+  const getData = async () => {
+    let postData = await getDataJSON('posts');
+    if (postData.post != null) {
+      setPost(postData.post);
+      setName(postData.name);
+      setDate(postData.date);
+    }
+  }
+  getData();
   return (
     <AuthContext.Consumer>
       {(auth) => (
@@ -29,98 +43,60 @@ const HomeScreen = (props) => {
               }
             }}
           />
-          <Card>
+          <Card containerStyle={styles.writePostCardStyle}>
             <Input
-              placeholder="What's On Your Mind?"
-              leftIcon={<Entypo name="pencil" size={24} color="black" />}
+              placeholder="What's on your mind?"
+              style={{ color: 'white' }}
+              inputContainerStyle={styles.inputStyle}
+              leftIcon={<Entypo name="pencil" size={24} color="white" />}
+              onChangeText={function (currentInput) {
+                setNewPostText(currentInput);
+              }}
             />
-            <Button title="Post" type="outline" onPress={function () { }} />
+            <Button
+              buttonStyle={styles.postButtonStyle}
+              titleStyle={{ color: 'white' }}
+              title="Post"
+              type="outline"
+              onPress={function () {
+                let newPost = {
+                  name: auth.currentUser.name,
+                  email: auth.currentUser.email,
+                  post: newPostText,
+                  date: moment().format("DD MMM, YYYY"),
+                };
+                storeDataJSON('posts', newPost);
+                //alert("Post Successful!");
+                setNewPostText("");
+              }}
+            />
           </Card>
-          <Card>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Avatar
-                containerStyle={{ backgroundColor: "#ffab91" }}
-                rounded
-                icon={{ name: "user", type: "font-awesome", color: "black" }}
-                activeOpacity={1}
-              />
-              <Text h4Style={{ padding: 10 }} h4>
-                Jim Halpert
-              </Text>
-            </View>
-            <Text style={{ fontStyle: "italic" }}> Posted on 10 Aug, 2020</Text>
-            <Text
-              style={{
-                paddingVertical: 10,
-              }}
-            >
-              {post}
-            </Text>
-            <Card.Divider />
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <Button
-                type="outline"
-                title="  Like (21)"
-                icon={<AntDesign name="like2" size={24} color="dodgerblue" />}
-              />
-              <Button type="solid" title="Comment (7)" />
-            </View>
-          </Card>
-          <Card>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Avatar
-                containerStyle={{ backgroundColor: "#ffab91" }}
-                rounded
-                icon={{ name: "user", type: "font-awesome", color: "black" }}
-                activeOpacity={1}
-              />
-              <Text h4Style={{ padding: 10 }} h4>
-                Dwight Schrute
-              </Text>
-            </View>
-            <Text style={{ fontStyle: "italic" }}> Posted on 10 Aug, 2020</Text>
-            <Text
-              style={{
-                paddingVertical: 10,
-              }}
-            >
-              {post}
-            </Text>
-            <Card.Divider />
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <Button
-                type="outline"
-                title="  Like (17)"
-                icon={<AntDesign name="like2" size={24} color="dodgerblue" />}
-              />
-              <Button type="solid" title="Comment (10)" />
-            </View>
-          </Card>
+          <PostCard name={name} date={date} post={post} />
         </View>
       )}
     </AuthContext.Consumer>
   )
 }
-    
+
 
 const styles = StyleSheet.create({
   rootViewStyle: {
     flex: 1,
     backgroundColor: '#17223B',
+  },
+  writePostCardStyle: {
+    backgroundColor: '#17223B',
+    borderColor: '#17223B',
+  },
+  postButtonStyle: {
+    borderColor: 'white',
+    borderWidth: 1,
+    width: '95%',
+    alignSelf: 'center',
+  },
+
+  inputStyle: {
+    borderBottomColor: 'white',
   },
 });
 

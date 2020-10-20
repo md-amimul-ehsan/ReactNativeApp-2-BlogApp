@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Input, Button, Card } from 'react-native-elements';
 import { FontAwesome, Entypo, Octicons, AntDesign } from '@expo/vector-icons';
-import {AuthContext} from '../providers/AuthProvider'
+import {AuthContext} from '../providers/AuthProvider';
 import { getDataJSON } from "../functions/AsyncStorageFunctions"; 
 
 const SignInScreen = (props) => {
