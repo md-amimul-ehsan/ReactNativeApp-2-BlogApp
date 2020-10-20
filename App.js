@@ -19,7 +19,7 @@ const AppDrawer = createDrawerNavigator();
 
 const AppDrawerScreen = () => {
   return (
-    <AppDrawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
+    <AppDrawer.Navigator drawerContent={(props)=><DrawerContent {...props}/>}>
       <AppDrawer.Screen name="Home" component={HomeTabScreen} />
       <AppDrawer.Screen name="Profile" component={ProfileScreen} />
     </AppDrawer.Navigator>

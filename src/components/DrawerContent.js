@@ -20,10 +20,10 @@ const DrawerContent = (props) => {
                         <Drawer.Section style={styles.homeDrawerSection}>
                             <DrawerItem
                                 icon={() => (
-                                     <Entypo name="home" color="white" size={30} />
+                                     <Entypo name="home" color="black" size={30} />
                                 )}
                                 label="Home"
-                                style={{borderBottomColor: 'white'}}
+                                style={{borderBottomColor: 'black'}}
                                 labelStyle={styles.labelStyle}
                                 onPress={() => { props.navigation.navigate('Home') }}
                             />
@@ -31,7 +31,7 @@ const DrawerContent = (props) => {
                         <Drawer.Section style={styles.profileDrawerSection}>
                             <DrawerItem
                                 icon={() => (
-                                    <Entypo name="user" size={30} color="white" />
+                                    <Entypo name="user" size={30} color="black" />
                                 )}
                                 label="Profile"
                                 labelStyle={styles.labelStyle}
@@ -42,7 +42,7 @@ const DrawerContent = (props) => {
                     <Drawer.Section style={styles.bottomDrawerSection}>
                         <DrawerItem
                             icon={() => (
-                                <Octicons name="sign-out" size={30} color="white" />
+                                <Octicons name="sign-out" size={30} color="black" />
                             )}
                             label="Sign Out"
                             labelStyle={styles.labelStyle}
@@ -64,39 +64,40 @@ const styles = StyleSheet.create({
     rootViewStyle: {
         flex: 1,
         justifyContent: 'flex-start',
-        backgroundColor: '#6B778D',
+        backgroundColor: '#CDDAF2',
     },
     drawerContent: {
         flex: 1,
         justifyContent: 'flex-start',
-        backgroundColor: '#6B778D',
+        backgroundColor: '#CDDAF2',
         marginTop: 50,
     },
     homeDrawerSection: {
         borderBottomWidth:1,
         borderTopWidth:1,
-        borderBottomColor: 'white',
-        borderTopColor: 'white',
+        borderBottomColor: 'black',
+        borderTopColor: 'black',
     },
     profileDrawerSection: {
         borderBottomWidth:1,
-        borderBottomColor: 'white',
+        borderBottomColor: 'black',
     },
     bottomDrawerSection: {
-        borderTopColor: 'white',
+        borderTopColor: 'black',
         borderTopWidth: 1,
-        backgroundColor: '#6B778D',
+        backgroundColor: '#CDDAF2',
     },
     labelStyle: {
-        color: 'white',
+        color: 'black',
         fontSize: 20,
     },
     textStyle: {
         fontSize: 25,
         fontWeight: 'bold',
-        color: 'white',
+        color: 'black',
         alignSelf: 'center',
         marginVertical: 20,
+        padding: 15,
     }
 });
 

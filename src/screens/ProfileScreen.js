@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
-import { Text, Header, Card } from "react-native-elements";
+import { Text, Header, Card, Button } from "react-native-elements";
+import { MaterialIcons } from '@expo/vector-icons';
 
 import { AuthContext } from '../providers/AuthProvider';
+import { removeData } from '../functions/AsyncStorageFunctions';
 
 const ProfileScreen = (props) => {
   return (
@@ -24,13 +26,29 @@ const ProfileScreen = (props) => {
             <Image source={require('../../assets/ehsan.jpg')} style={styles.photoStyle} />
             <Card containerStyle={styles.cardStyle}>
               <Text style={styles.nameTextStyle}>NAME: {auth.currentUser.name}</Text>
-              <Card.Divider/>
+              <Card.Divider />
               <Text style={styles.textStyle}>Born on: 15 Dec, 1999</Text>
-              <Card.Divider/>
+              <Card.Divider />
               <Text style={styles.textStyle}>Address: Dhaka</Text>
-              <Card.Divider/>
+              <Card.Divider />
               <Text style={styles.textStyle}>Works At: InnovaTech</Text>
             </Card>
+            <View>
+              <Button
+                icon={<MaterialIcons name="delete" size={24} color="white" />}
+                title="Delete Profile"
+                titleStyle={{ color: "white" }}
+                buttonStyle={styles.outlineButtonStyle}
+                type='outline'
+                onPress={async function () {
+                  await removeData(auth.currentUser.email);
+                  alert("Profile Deleted Sucessfully!");
+                  auth.setIsLoggedIn(false);
+                  auth.setCurrentUser({});
+                }
+                }
+              />
+            </View>
           </View>
         </View>
       )}
@@ -65,10 +83,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   contentViewStyle: {
-    flex:1,
+    flex: 1,
     justifyContent: 'space-evenly',
     alignItems: 'center',
-  }
+  },
+  outlineButtonStyle: {
+    borderColor: "white",
+    borderWidth: 1,
+    width: '100%',
+  },
 });
 
 export default ProfileScreen;

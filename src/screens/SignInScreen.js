@@ -45,7 +45,7 @@ const SignInScreen = (props) => {
               type='outline'
               onPress={async function () {
                 let userData = await getDataJSON(email);
-                if (userData.password == password) {
+                if (userData!= null && userData.password == password) {
                   auth.setIsLoggedIn(true);
                   auth.setCurrentUser(userData);
                   //console.log(auth.isLoggedIn);
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   outlineButtonStyle: {
     borderColor: "white",
     borderWidth: 1,
-    width: '60%',
+    width: '90%',
     alignSelf: 'center',
   },
   clearButtonStyle: {
