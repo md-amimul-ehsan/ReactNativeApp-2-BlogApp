@@ -83,7 +83,7 @@ const HomeScreen = (props) => {
               }}
             />
           </Card>
-          {console.log('list ',postList)}
+          {/* {console.log('list ',postList)} */}
           <FlatList
             data={postList}
             renderItem={postItem => (

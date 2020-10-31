@@ -4,18 +4,21 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import DrawerContent from './src/components/DrawerContent';
+import { Entypo, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import HomeScreen from "./src/screens/HomeScreen";
 import SignInScreen from "./src/screens/SignInScreen";
 import SignUpScreen from "./src/screens/SignUpScreen";
 import ProfileScreen from './src/screens/ProfileScreen';
 import NotificationScreen from './src/screens/NotificationScreen';
+import PostScreen from './src/screens/PostScreen';
 import { AuthContext, AuthProvider } from './src/providers/AuthProvider';
-import { Entypo, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import PostCard from './src/components/PostCard';
 
 const AuthStack = createStackNavigator();
 const HomeTab = createMaterialBottomTabNavigator();
 const AppDrawer = createDrawerNavigator();
+const stack = createStackNavigator();
 
 const AppDrawerScreen = () => {
   return (
@@ -26,6 +29,23 @@ const AppDrawerScreen = () => {
   );
 };
 
+const individualPostStack = () => {
+  return (
+    <stack.Navigator initialRouteName="Home">
+      <stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ headerShown: false }}
+      />
+      <stack.Screen
+        name="Post"
+        component={PostScreen}
+        options={{ headerShown: false }}
+      />
+    </stack.Navigator>
+  );
+}
+
 const HomeTabScreen = () => {
   return (
     <HomeTab.Navigator
@@ -35,7 +55,8 @@ const HomeTabScreen = () => {
       <HomeTab.Screen
 
         name="Home"
-        component={HomeScreen}
+        //component={HomeScreen}
+        component={individualPostStack}
         options={{
           tabBarLabel: "Home",
           tabBarIcon: ({ focused }) =>

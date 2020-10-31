@@ -39,14 +39,14 @@ const ProfileScreen = (props) => {
             }}
           />
           <View style={styles.contentViewStyle}>
-            {/* <Image source={require('../../assets/ehsan.jpg')} style={styles.photoStyle} /> */}
-            <Avatar
+            <Image source={require('../../assets/ehsan.jpg')} style={styles.photoStyle} />
+            {/* <Avatar
               source={require('../../assets/ehsan.jpg')}
               rounded
               containerStyle={{ height: 250, width: 250 }}
               size='xlarge'
 
-            />
+            /> */}
 
             {/* {photo && (
               <Image
@@ -64,6 +64,17 @@ const ProfileScreen = (props) => {
               <Text style={styles.textStyle}>Works At: InnovaTech</Text>
             </Card>
             <View>
+            <Button
+                icon={<MaterialIcons name="delete" size={24} color="white" />}
+                title="  Image Picker"
+                titleStyle={{ color: "white" }}
+                buttonStyle={styles.outlineButtonStyle}
+                type='outline'
+                onPress={ function () {
+                  props.navigation.navigate("ImagePicker");
+                }
+                }
+              />
               <Button
                 icon={<MaterialIcons name="delete" size={24} color="white" />}
                 title="  Delete Profile"

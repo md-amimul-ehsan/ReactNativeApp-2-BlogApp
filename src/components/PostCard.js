@@ -7,11 +7,12 @@ import {
     Text,
 } from "react-native-elements";
 import { AntDesign, FontAwesome5, Octicons } from "@expo/vector-icons";
-
+import { useNavigation } from '@react-navigation/native';
 import { removeData } from '../functions/AsyncStorageFunctions';
 
 const PostCard = (props) => {
-    return (
+    const navigation = useNavigation();   
+     return (
         <View style={styles.rootViewStyle}>
             <Text>PostCard</Text>
             <Card containerStyle={styles.cardStyle}>
@@ -66,6 +67,11 @@ const PostCard = (props) => {
                         titleStyle={{ color: 'white', }}
                         buttonStyle={{ backgroundColor: '#17223B', borderRadius: 10 }}
                         icon={<FontAwesome5 name="comment" size={24} color="white" />}
+                        onPress={
+                            function () {
+                              navigation.navigate("Post")
+                            }
+                          }
                     />
                 </View>
             </Card>
