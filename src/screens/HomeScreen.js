@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, FlatList } from "react-native";
 import {
   Card,
   Button,
@@ -11,23 +11,18 @@ import moment from "moment";
 
 import PostCard from '../components/PostCard';
 import { AuthContext } from "../providers/AuthProvider";
-import { getDataJSON, storeDataJSON } from "../functions/AsyncStorageFunctions"; 
+import { getDataJSON, storeDataJSON } from "../functions/AsyncStorageFunctions";
 
 
 const HomeScreen = (props) => {
   const [newPostText, setNewPostText] = useState("");
-  const [name, setName] = useState("");
-  const [date, setDate] = useState("");
-  const [post, setPost] = useState("");
-  const getData = async () => {
-    let postData = await getDataJSON('posts');
-    if (postData.post != null) {
-      setPost(postData.post);
-      setName(postData.name);
-      setDate(postData.date);
+  const [postList, setPostList] = useState([]);
+  useEffect(() => {
+    const getData = async () => {
+      setPostList(await getDataJSON('posts'));
     }
-  }
-  getData();
+    getData();
+  }, [])
   return (
     <AuthContext.Consumer>
       {(auth) => (
@@ -58,20 +53,48 @@ const HomeScreen = (props) => {
               titleStyle={{ color: 'white' }}
               title="Post"
               type="outline"
-              onPress={function () {
-                let newPost = {
-                  name: auth.currentUser.name,
-                  email: auth.currentUser.email,
-                  post: newPostText,
-                  date: moment().format("DD MMM, YYYY"),
-                };
-                storeDataJSON('posts', newPost);
+              onPress={async() => {
+                if (postList != null) {
+                  setPostList(posts => [
+                    ...posts,
+                    {
+                      name: auth.currentUser.name,
+                      email: auth.currentUser.email,
+                      date: moment().format("DD MMM, YYYY"),
+                      post: newPostText,
+                      key: newPostText,
+                    },
+                  ]);
+                }
+                else {
+                  const arr = [];
+                  arr.push({
+                    name: auth.currentUser.name,
+                    email: auth.currentUser.email,
+                    date: moment().format("DD MMM, YYYY"),
+                    post: newPostText,
+                    key: newPostText,
+                  });
+                  setPostList(arr);
+                }
+                await storeDataJSON('posts', postList);
                 //alert("Post Successful!");
                 setNewPostText("");
               }}
             />
           </Card>
-          <PostCard name={name} date={date} post={post} />
+          {console.log('list ',postList)}
+          <FlatList
+            data={postList}
+            renderItem={postItem => (
+              <PostCard
+                name={postItem.item.name}
+                date={postItem.item.date}
+                post={postItem.item.post}
+              />
+            )}
+          />
+
         </View>
       )}
     </AuthContext.Consumer>
@@ -91,7 +114,7 @@ const styles = StyleSheet.create({
   postButtonStyle: {
     borderColor: 'white',
     borderWidth: 1,
-    width: '95%',
+    width: '94%',
     alignSelf: 'center',
   },
 

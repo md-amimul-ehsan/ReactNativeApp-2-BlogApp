@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
     Card,
@@ -6,7 +6,9 @@ import {
     Avatar,
     Text,
 } from "react-native-elements";
-import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
+import { AntDesign, FontAwesome5, Octicons } from "@expo/vector-icons";
+
+import { removeData } from '../functions/AsyncStorageFunctions';
 
 const PostCard = (props) => {
     return (
@@ -28,6 +30,15 @@ const PostCard = (props) => {
                     <Text h4Style={{ padding: 10, color: 'white' }} h4>
                         {props.name}
                     </Text>
+                    <Button
+                        icon={<Octicons name="trashcan" size={24} color="white" />}
+                        buttonStyle={{ backgroundColor: '#6B778D'}}
+                        type='solid'
+                        onPress={async function () {
+                            await removeData('posts');
+                            alert("Post Deleted Sucessfully!");
+                        }}
+                    />
                 </View>
                 <Text style={{ fontStyle: "italic", color: "white" }}> Posted on {props.date}</Text>
                 <Text
@@ -45,15 +56,15 @@ const PostCard = (props) => {
                     <Button
                         type="outline"
                         title="  Like (21)"
-                        titleStyle={{color:'white'}}
-                        buttonStyle={{borderColor:'white', borderWidth: 1, borderRadius: 10}}
+                        titleStyle={{ color: 'white' }}
+                        buttonStyle={{ borderColor: 'white', borderWidth: 1, borderRadius: 10 }}
                         icon={<AntDesign name="like2" size={24} color="white" />}
                     />
                     <Button
                         type="solid"
                         title="  Comment (7)"
-                        titleStyle={{color:'white',}}
-                        buttonStyle={{backgroundColor: '#17223B', borderRadius: 10}}
+                        titleStyle={{ color: 'white', }}
+                        buttonStyle={{ backgroundColor: '#17223B', borderRadius: 10 }}
                         icon={<FontAwesome5 name="comment" size={24} color="white" />}
                     />
                 </View>

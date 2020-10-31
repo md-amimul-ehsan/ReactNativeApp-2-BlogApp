@@ -14,7 +14,6 @@ const SignInScreen = (props) => {
     <View style={styles.rootViewStyle}>
       <Card containerStyle={styles.cardStyle}>
         <Input
-          placeholderTextColor='white'
           inputContainerStyle={styles.inputStyle}
           style={{color:'white'}}
           leftIcon={<Ionicons name="ios-person" size={24} color="white" />}
@@ -24,7 +23,6 @@ const SignInScreen = (props) => {
           }}
         />
         <Input
-          placeholderTextColor='white'
           inputContainerStyle={styles.inputStyle}
           style={{color:'white'}}
           leftIcon={<FontAwesome name="envelope" size={24} color="white" />}
@@ -34,7 +32,6 @@ const SignInScreen = (props) => {
           }}
         />
         <Input
-          placeholderTextColor='white'
           inputContainerStyle={styles.inputStyle}
           style={{color:'white'}}
           leftIcon={<AntDesign name="idcard" size={24} color="white" />}
@@ -44,7 +41,6 @@ const SignInScreen = (props) => {
           }}
         />
         <Input
-          placeholderTextColor='white'
           inputContainerStyle={styles.inputStyle}
           style={{color:'white'}}
           leftIcon={<Entypo name="key" size={24} color="white" />}

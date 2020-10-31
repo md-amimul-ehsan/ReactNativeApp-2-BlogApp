@@ -1,12 +1,28 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
-import { Text, Header, Card, Button } from "react-native-elements";
+import { Text, Header, Card, Button, Avatar } from "react-native-elements";
 import { MaterialIcons } from '@expo/vector-icons';
+import ImagePicker from 'react-native-image-picker';
 
 import { AuthContext } from '../providers/AuthProvider';
 import { removeData } from '../functions/AsyncStorageFunctions';
 
 const ProfileScreen = (props) => {
+  // state = {
+  //   photo: null,
+  // };
+
+  // handleChoosePhoto = () => {
+  //   const options = {
+  //     noData: true,
+  //   };
+  //   ImagePicker.launchImageLibrary(options, (response) => {
+  //     if (response.uri) {
+  //       this.setState({ photo: response });
+  //     }
+  //   });
+  // };
+  // const { photo } = this.state;
   return (
     <AuthContext.Consumer>
       {(auth) => (
@@ -19,11 +35,25 @@ const ProfileScreen = (props) => {
               color: "#fff",
               onPress: function () {
                 props.navigation.toggleDrawer();
-              }
+              },
             }}
           />
           <View style={styles.contentViewStyle}>
-            <Image source={require('../../assets/ehsan.jpg')} style={styles.photoStyle} />
+            {/* <Image source={require('../../assets/ehsan.jpg')} style={styles.photoStyle} /> */}
+            <Avatar
+              source={require('../../assets/ehsan.jpg')}
+              rounded
+              containerStyle={{ height: 250, width: 250 }}
+              size='xlarge'
+
+            />
+
+            {/* {photo && (
+              <Image
+                source={{ uri: photo.uri }}
+                style={styles.photoStyle}
+              />
+            )} */}
             <Card containerStyle={styles.cardStyle}>
               <Text style={styles.nameTextStyle}>NAME: {auth.currentUser.name}</Text>
               <Card.Divider />
@@ -36,7 +66,7 @@ const ProfileScreen = (props) => {
             <View>
               <Button
                 icon={<MaterialIcons name="delete" size={24} color="white" />}
-                title="Delete Profile"
+                title="  Delete Profile"
                 titleStyle={{ color: "white" }}
                 buttonStyle={styles.outlineButtonStyle}
                 type='outline'
@@ -48,6 +78,14 @@ const ProfileScreen = (props) => {
                 }
                 }
               />
+              {/* <Button
+                icon={<MaterialIcons name="delete" size={24} color="white" />}
+                title="Choose Photo"
+                titleStyle={{ color: "white" }}
+                buttonStyle={styles.outlineButtonStyle}
+                type='outline'
+                onPress={this.handleChoosePhoto}
+              /> */}
             </View>
           </View>
         </View>
