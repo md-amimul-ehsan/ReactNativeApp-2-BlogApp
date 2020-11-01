@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
     Card,
@@ -9,12 +9,32 @@ import {
 import { AntDesign, FontAwesome5, Octicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
 import { removeData } from '../functions/AsyncStorageFunctions';
+import { getDataJSON } from "../functions/AsyncStorageFunctions";
 
 const PostCard = (props) => {
-    const navigation = useNavigation();   
-     return (
+    const [commentList, setCommentList] = useState([]);
+
+    // const getData = async () => {
+    //     setCommentList(await getDataJSON(props.post));
+    // }
+    // getData();
+    //useEffect(() => {
+    const getData = async () => {
+        setCommentList(await getDataJSON(props.post));
+    }
+    getData();
+    // }, [])
+    let commentButtonTitle = "";
+    if (commentList != null) {
+        let numberOfComments = commentList.length;
+        commentButtonTitle = "  Comment (".concat(numberOfComments.toString()).concat(")");
+    }
+    else {
+        commentButtonTitle = "  Comment (0)";
+    }
+    const navigation = useNavigation();
+    return (
         <View style={styles.rootViewStyle}>
-            <Text>PostCard</Text>
             <Card containerStyle={styles.cardStyle}>
                 <View
                     style={{
@@ -33,7 +53,7 @@ const PostCard = (props) => {
                     </Text>
                     <Button
                         icon={<Octicons name="trashcan" size={24} color="white" />}
-                        buttonStyle={{ backgroundColor: '#6B778D'}}
+                        buttonStyle={{ backgroundColor: '#6B778D' }}
                         type='solid'
                         onPress={async function () {
                             await removeData('posts');
@@ -63,15 +83,15 @@ const PostCard = (props) => {
                     />
                     <Button
                         type="solid"
-                        title="  Comment (7)"
+                        title={commentButtonTitle}
                         titleStyle={{ color: 'white', }}
                         buttonStyle={{ backgroundColor: '#17223B', borderRadius: 10 }}
                         icon={<FontAwesome5 name="comment" size={24} color="white" />}
                         onPress={
                             function () {
-                              navigation.navigate("Post")
+                                navigation.navigate("Post", { name: props.name, post: props.post, date: props.date, email: props.email });
                             }
-                          }
+                        }
                     />
                 </View>
             </Card>
@@ -88,8 +108,7 @@ const styles = StyleSheet.create({
     },
     rootViewStyle: {
         flex: 1,
-        alignItems: 'center',
-    }
+    },
 });
 
 export default PostCard;

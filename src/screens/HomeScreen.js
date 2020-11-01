@@ -91,6 +91,7 @@ const HomeScreen = (props) => {
                 name={postItem.item.name}
                 date={postItem.item.date}
                 post={postItem.item.post}
+                email={postItem.item.email}
               />
             )}
           />

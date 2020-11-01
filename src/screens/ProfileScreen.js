@@ -64,7 +64,7 @@ const ProfileScreen = (props) => {
               <Text style={styles.textStyle}>Works At: InnovaTech</Text>
             </Card>
             <View>
-            <Button
+            {/* <Button
                 icon={<MaterialIcons name="delete" size={24} color="white" />}
                 title="  Image Picker"
                 titleStyle={{ color: "white" }}
@@ -74,7 +74,7 @@ const ProfileScreen = (props) => {
                   props.navigation.navigate("ImagePicker");
                 }
                 }
-              />
+              /> */}
               <Button
                 icon={<MaterialIcons name="delete" size={24} color="white" />}
                 title="  Delete Profile"

@@ -13,7 +13,6 @@ import ProfileScreen from './src/screens/ProfileScreen';
 import NotificationScreen from './src/screens/NotificationScreen';
 import PostScreen from './src/screens/PostScreen';
 import { AuthContext, AuthProvider } from './src/providers/AuthProvider';
-import PostCard from './src/components/PostCard';
 
 const AuthStack = createStackNavigator();
 const HomeTab = createMaterialBottomTabNavigator();
@@ -21,6 +20,7 @@ const AppDrawer = createDrawerNavigator();
 const stack = createStackNavigator();
 
 const AppDrawerScreen = () => {
+  //console.log(props);
   return (
     <AppDrawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>
       <AppDrawer.Screen name="Home" component={HomeTabScreen} />
@@ -46,7 +46,8 @@ const individualPostStack = () => {
   );
 }
 
-const HomeTabScreen = () => {
+const HomeTabScreen = (props) => {
+  // console.log(props.screenProps);
   return (
     <HomeTab.Navigator
       initialRouteName="Home"
@@ -68,6 +69,7 @@ const HomeTabScreen = () => {
         }}
       />
       <HomeTab.Screen
+        
         name="Notification"
         component={NotificationScreen}
         options={{
@@ -105,7 +107,7 @@ function App() {
       <AuthContext.Consumer>
         {(auth) => (
           <NavigationContainer>
-            {auth.isLoggedIn ? <AppDrawerScreen /> : <AuthStackScreen />}
+            {auth.isLoggedIn ? <AppDrawerScreen/> : <AuthStackScreen />}
           </NavigationContainer>)}
       </AuthContext.Consumer>
     </AuthProvider>
