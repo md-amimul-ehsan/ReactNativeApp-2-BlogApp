@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Input, Button, Card } from 'react-native-elements';
 import { FontAwesome, Entypo, Octicons, AntDesign } from '@expo/vector-icons';
 import {AuthContext} from '../providers/AuthProvider';
-import { getDataJSON } from "../functions/AsyncStorageFunctions"; 
+import { getDataJSON, storeDataJSON } from "../functions/AsyncStorageFunctions"; 
 
 const SignInScreen = (props) => {
   const [email, setEmail] = useState("");
@@ -46,6 +46,7 @@ const SignInScreen = (props) => {
                 if (userData!= null && userData.password == password) {
                   auth.setIsLoggedIn(true);
                   auth.setCurrentUser(userData);
+                  await storeDataJSON("user",userData.email);
                   //console.log(auth.isLoggedIn);
                 } else {
                   alert("Login Failed!");

@@ -23,7 +23,7 @@ const AppDrawerScreen = () => {
   //console.log(props);
   return (
     <AppDrawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>
-      <AppDrawer.Screen name="Home" component={HomeTabScreen} />
+      <AppDrawer.Screen name="Home" component={HomeTabScreen}/>
       <AppDrawer.Screen name="Profile" component={ProfileScreen} />
     </AppDrawer.Navigator>
   );
@@ -46,15 +46,14 @@ const individualPostStack = () => {
   );
 }
 
-const HomeTabScreen = (props) => {
-  // console.log(props.screenProps);
+const HomeTabScreen = () => {
+  //console.log(props);
   return (
     <HomeTab.Navigator
       initialRouteName="Home"
       barStyle={{ backgroundColor: '#6B778D' }}
     >
       <HomeTab.Screen
-
         name="Home"
         //component={HomeScreen}
         component={individualPostStack}
@@ -69,7 +68,6 @@ const HomeTabScreen = (props) => {
         }}
       />
       <HomeTab.Screen
-        
         name="Notification"
         component={NotificationScreen}
         options={{

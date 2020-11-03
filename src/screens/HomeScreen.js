@@ -11,16 +11,24 @@ import moment from "moment";
 
 import PostCard from '../components/PostCard';
 import { AuthContext } from "../providers/AuthProvider";
-import { getDataJSON, storeDataJSON } from "../functions/AsyncStorageFunctions";
+import { getDataJSON, storeDataJSON, removeData } from "../functions/AsyncStorageFunctions";
 
 
 const HomeScreen = (props) => {
   const [newPostText, setNewPostText] = useState("");
   const [postList, setPostList] = useState([]);
+  const getData = async () => {
+    await getDataJSON("posts").then((data) => {
+      if (data == null) {
+        setPostList([]);
+      } else setPostList(data);
+    });
+  };
+  const init = async () => {
+    await removeData("posts");
+  };
   useEffect(() => {
-    const getData = async () => {
-      setPostList(await getDataJSON('posts'));
-    }
+    //init();
     getData();
   }, [])
   return (
@@ -53,33 +61,23 @@ const HomeScreen = (props) => {
               titleStyle={{ color: 'white' }}
               title="Post"
               type="outline"
-              onPress={async() => {
-                if (postList != null) {
-                  setPostList(posts => [
-                    ...posts,
-                    {
-                      name: auth.currentUser.name,
-                      email: auth.currentUser.email,
-                      date: moment().format("DD MMM, YYYY"),
-                      post: newPostText,
-                      key: newPostText,
-                    },
-                  ]);
-                }
-                else {
-                  const arr = [];
-                  arr.push({
+              onPress={async () => {
+                let arr = [
+                  ...postList,
+                  {
                     name: auth.currentUser.name,
                     email: auth.currentUser.email,
                     date: moment().format("DD MMM, YYYY"),
                     post: newPostText,
                     key: newPostText,
-                  });
-                  setPostList(arr);
-                }
-                await storeDataJSON('posts', postList);
+                  },
+                ];
+                //await storeDataJSON('posts', postList);
                 //alert("Post Successful!");
-                setNewPostText("");
+                //setNewPostText("");
+                await storeDataJSON("posts", arr).then(() => {
+                  setPostList(arr);
+                });
               }}
             />
           </Card>

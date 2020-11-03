@@ -9,30 +9,33 @@ import {
 import { AntDesign, FontAwesome5, Octicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
 import { removeData } from '../functions/AsyncStorageFunctions';
-import { getDataJSON } from "../functions/AsyncStorageFunctions";
+import { getDataJSON, storeDataJSON } from "../functions/AsyncStorageFunctions";
 
 const PostCard = (props) => {
     const [commentList, setCommentList] = useState([]);
-
-    // const getData = async () => {
-    //     setCommentList(await getDataJSON(props.post));
-    // }
-    // getData();
-    //useEffect(() => {
+    const [likes, setLikes] = useState(0);
+    const [data, setData] = useState({});
     const getData = async () => {
-        setCommentList(await getDataJSON(props.post));
-    }
+        await getDataJSON(props.post).then((data) => {
+            if (data == null) {
+                setCommentList([]);
+            } else setCommentList(data);
+        });
+    };
     getData();
-    // }, [])
-    let commentButtonTitle = "";
-    if (commentList != null) {
-        let numberOfComments = commentList.length;
-        commentButtonTitle = "  Comment (".concat(numberOfComments.toString()).concat(")");
+
+    let commentButtonTitle = "  comment (0)";
+    commentButtonTitle = "  Comment (".concat(commentList.length.toString()).concat(")");
+
+    let likeButtonTitle = "";
+    if (likes != 0) {
+        likeButtonTitle = "  Like (".concat(likes.toString()).concat(")");
     }
     else {
-        commentButtonTitle = "  Comment (0)";
+        likeButtonTitle = " Like (0)";
     }
     const navigation = useNavigation();
+
     return (
         <View style={styles.rootViewStyle}>
             <Card containerStyle={styles.cardStyle}>
@@ -76,10 +79,19 @@ const PostCard = (props) => {
                 >
                     <Button
                         type="outline"
-                        title="  Like (21)"
+                        title={likeButtonTitle}
                         titleStyle={{ color: 'white' }}
                         buttonStyle={{ borderColor: 'white', borderWidth: 1, borderRadius: 10 }}
                         icon={<AntDesign name="like2" size={24} color="white" />}
+                    // onPress={
+                    //     async () => {
+                    //         setLikes(likes + 1);
+                    //         let storedObject = {};
+                    //         storedObject.commentList = commentList;
+                    //         storedObject.likes = likes;
+                    //         await storeDataJSON(props.post, storedObject);
+                    //     }
+                    // }
                     />
                     <Button
                         type="solid"

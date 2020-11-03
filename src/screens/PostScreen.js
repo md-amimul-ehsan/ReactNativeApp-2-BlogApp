@@ -5,22 +5,49 @@ import { MaterialIcons } from '@expo/vector-icons';
 import ImagePicker from 'react-native-image-picker';
 import { AntDesign, FontAwesome5, Octicons } from "@expo/vector-icons";
 import { AuthContext } from '../providers/AuthProvider';
-import { removeData } from '../functions/AsyncStorageFunctions';
 import { ScrollView } from 'react-native-gesture-handler';
 import Comments from "../components/Comments";
 import moment from "moment";
-import { getDataJSON, storeDataJSON } from "../functions/AsyncStorageFunctions";
+import { getDataJSON, storeDataJSON, removeData } from "../functions/AsyncStorageFunctions";
 
 const PostScreen = (props) => {
   //console.log(props);
   const [newComment, setNewComment] = useState("");
   const [commentList, setCommentList] = useState([]);
+  const [likes, setLikes] = useState(0);
   const [notificationList, setNotificationList] = useState([]);
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     //setCommentList(await getDataJSON(props.route.params.post));
+  //     let data = await getDataJSON(props.route.params.post);
+  //     if (data != null) {
+  //       setCommentList(data.commentList);
+  //       setLikes(data.likes);
+  //     }
+  //   }
+  //   getData();
+  // }, [])
+  const getData = async () => {
+    await getDataJSON(props.route.params.post).then((data) => {
+      if (data == null) {
+        setCommentList([]);
+      } else setCommentList(data);
+    });
+  };
+  const getNotificationData = async () => {
+    await getDataJSON(props.route.params.email.concat("notifications")).then((data) => {
+      if (data == null) {
+        setNotificationList([]);
+      } else setNotificationList(data);
+    });
+  };
+  const init = async () => {
+    await removeData(props.route.params.post);
+  };
   useEffect(() => {
-    const getData = async () => {
-      setCommentList(await getDataJSON(props.route.params.post));
-    }
     getData();
+    getNotificationData();
+    //init();
   }, [])
   return (
     <AuthContext.Consumer>
@@ -82,45 +109,58 @@ const PostScreen = (props) => {
                 type="outline"
                 icon={<FontAwesome5 name="comment" size={24} color="white" />}
                 onPress={async () => {
-                  if (commentList != null) {
-                    setCommentList(comments => [
-                      ...comments,
-                      {
-                        name: auth.currentUser.name,
-                        comment: newComment,
-                        key: newComment,
-                        date: moment().format("DD/MM/YY"),
-                      },
-                    ]);
-                  }
-                  else {
-                    const arr = [];
-                    arr.push({
+                  let arr = [
+                    ...commentList,
+                    {
                       name: auth.currentUser.name,
+                      email: auth.currentUser.email,
+                      date: moment().format("DD MMM, YYYY"),
                       comment: newComment,
                       key: newComment,
-                      date: moment().format("DD/MM/YY"),
-                    });
-                    setCommentList(arr);
-                  }
-
+                    },
+                  ];
                   if (auth.currentUser.email != props.route.params.email) {
-                    if (notificationList != null) {
-                      setNotificationList(notifications => [
-                        ...notifications, auth.currentUser.name.concat(" commented on your post")
-                      ]);
-                    }
-                    else {
-                      const arr = [];
-                      arr.push(auth.currentUser.name.concat(" commented on your post"));
-                      setNotificationList(arr);
-                    }
+                    let arr1 = [
+                      ...notificationList,
+                      {
+                        notification: auth.currentUser.name.concat(" commented on your post"),
+                        key: newComment,
+                      }
+                    ];
+                    await storeDataJSON(props.route.params.email.concat("notifications"), arr1).then(() => {
+                      setNotificationList(arr1);
+                    });
                   }
 
-                  await storeDataJSON(props.route.params.name, notificationList);
-                  await storeDataJSON(props.route.params.post, commentList);
+                  // if (auth.currentUser.email != props.route.params.email) {
+                  //   if (notificationList != null) {
+                  //     setNotificationList(notifications => [
+                  //       ...notifications, auth.currentUser.name.concat(" commented on your post")
+                  //     ]);
+                  //   }
+                  //   else {
+                  //     const arr = [];
+                  //     arr.push(auth.currentUser.name.concat(" commented on your post"));
+                  //     setNotificationList(arr);
+                  //   }
+                  // }
+
+                  //  let storedObject = {};
+                  //  storedObject.commentList = arr;
+                  //  storedObject.likes = likes;
+                  //  await storeDataJSON(props.route.params.post, storedObject).then(() => {
+                  //   setCommentList(arr);
+                  // });
+                  await storeDataJSON(props.route.params.post, arr).then(() => {
+                    setCommentList(arr);
+                  });
+                 
+
+                  //await storeDataJSON((props.route.params.post).concat("-notifications-"), notificationList);
+                  //await storeDataJSON(props.route.params.post, commentList);
+                  //await storeDataJSON(props.route.params.post, storedObject);
                   //alert("Post Successful!");
-                  setNewComment("");
+                  //setNewComment("");
                 }}
               />
             </Card>
