@@ -24,7 +24,7 @@ const AppDrawerScreen = () => {
   return (
     <AppDrawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>
       <AppDrawer.Screen name="Home" component={HomeTabScreen}/>
-      <AppDrawer.Screen name="Profile" component={ProfileScreen} />
+      <AppDrawer.Screen name="Profile" component={ProfileScreen}  />
     </AppDrawer.Navigator>
   );
 };
@@ -55,7 +55,6 @@ const HomeTabScreen = () => {
     >
       <HomeTab.Screen
         name="Home"
-        //component={HomeScreen}
         component={individualPostStack}
         options={{
           tabBarLabel: "Home",

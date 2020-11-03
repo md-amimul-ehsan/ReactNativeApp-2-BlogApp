@@ -55,7 +55,7 @@ const NotificationScreen = (props) => {
           }
         }}
       />
-      <Text style={{ color: 'white' }}>sup?</Text>
+      {/* <Text style={{ color: 'white' }}>sup?</Text> */}
       <FlatList
         keyExtractor={(item, index) => item.key}
         data={notificationList}

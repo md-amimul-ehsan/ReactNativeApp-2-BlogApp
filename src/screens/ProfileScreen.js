@@ -6,23 +6,9 @@ import ImagePicker from 'react-native-image-picker';
 
 import { AuthContext } from '../providers/AuthProvider';
 import { removeData } from '../functions/AsyncStorageFunctions';
+import ImagePickerExample from '../components/ImagePicker';
 
 const ProfileScreen = (props) => {
-  // state = {
-  //   photo: null,
-  // };
-
-  // handleChoosePhoto = () => {
-  //   const options = {
-  //     noData: true,
-  //   };
-  //   ImagePicker.launchImageLibrary(options, (response) => {
-  //     if (response.uri) {
-  //       this.setState({ photo: response });
-  //     }
-  //   });
-  // };
-  // const { photo } = this.state;
   return (
     <AuthContext.Consumer>
       {(auth) => (
@@ -39,21 +25,7 @@ const ProfileScreen = (props) => {
             }}
           />
           <View style={styles.contentViewStyle}>
-            <Image source={require('../../assets/ehsan.jpg')} style={styles.photoStyle} />
-            {/* <Avatar
-              source={require('../../assets/ehsan.jpg')}
-              rounded
-              containerStyle={{ height: 250, width: 250 }}
-              size='xlarge'
-
-            /> */}
-
-            {/* {photo && (
-              <Image
-                source={{ uri: photo.uri }}
-                style={styles.photoStyle}
-              />
-            )} */}
+            <ImagePickerExample />
             <Card containerStyle={styles.cardStyle}>
               <Text style={styles.nameTextStyle}>NAME: {auth.currentUser.name}</Text>
               <Card.Divider />
@@ -64,17 +36,6 @@ const ProfileScreen = (props) => {
               <Text style={styles.textStyle}>Works At: InnovaTech</Text>
             </Card>
             <View>
-            {/* <Button
-                icon={<MaterialIcons name="delete" size={24} color="white" />}
-                title="  Image Picker"
-                titleStyle={{ color: "white" }}
-                buttonStyle={styles.outlineButtonStyle}
-                type='outline'
-                onPress={ function () {
-                  props.navigation.navigate("ImagePicker");
-                }
-                }
-              /> */}
               <Button
                 icon={<MaterialIcons name="delete" size={24} color="white" />}
                 title="  Delete Profile"
@@ -89,14 +50,6 @@ const ProfileScreen = (props) => {
                 }
                 }
               />
-              {/* <Button
-                icon={<MaterialIcons name="delete" size={24} color="white" />}
-                title="Choose Photo"
-                titleStyle={{ color: "white" }}
-                buttonStyle={styles.outlineButtonStyle}
-                type='outline'
-                onPress={this.handleChoosePhoto}
-              /> */}
             </View>
           </View>
         </View>
