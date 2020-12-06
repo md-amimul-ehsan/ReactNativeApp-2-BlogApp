@@ -14,20 +14,9 @@ const PostScreen = (props) => {
   //console.log(props);
   const [newComment, setNewComment] = useState("");
   const [commentList, setCommentList] = useState([]);
-  const [likes, setLikes] = useState(0);
   const [notificationList, setNotificationList] = useState([]);
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     //setCommentList(await getDataJSON(props.route.params.post));
-  //     let data = await getDataJSON(props.route.params.post);
-  //     if (data != null) {
-  //       setCommentList(data.commentList);
-  //       setLikes(data.likes);
-  //     }
-  //   }
-  //   getData();
-  // }, [])
-  const getData = async () => {
+  
+  const getCommentData = async () => {
     await getDataJSON(props.route.params.post).then((data) => {
       if (data == null) {
         setCommentList([]);
@@ -45,7 +34,7 @@ const PostScreen = (props) => {
     await removeData(props.route.params.post);
   };
   useEffect(() => {
-    getData();
+    getCommentData();
     getNotificationData();
     //init();
   }, [])
@@ -123,8 +112,13 @@ const PostScreen = (props) => {
                     let arr1 = [
                       ...notificationList,
                       {
+                        name: auth.currentUser.name,
+                        email: auth.currentUser.email,
+                        date: moment().format("DD MMM, YYYY"),
+                        post: props.route.params.post,
                         notification: auth.currentUser.name.concat(" commented on your post"),
                         key: newComment,
+                        type: "comment",
                       }
                     ];
                     await storeDataJSON(props.route.params.email.concat("notifications"), arr1).then(() => {
@@ -132,29 +126,10 @@ const PostScreen = (props) => {
                     });
                   }
 
-                  // if (auth.currentUser.email != props.route.params.email) {
-                  //   if (notificationList != null) {
-                  //     setNotificationList(notifications => [
-                  //       ...notifications, auth.currentUser.name.concat(" commented on your post")
-                  //     ]);
-                  //   }
-                  //   else {
-                  //     const arr = [];
-                  //     arr.push(auth.currentUser.name.concat(" commented on your post"));
-                  //     setNotificationList(arr);
-                  //   }
-                  // }
-
-                  //  let storedObject = {};
-                  //  storedObject.commentList = arr;
-                  //  storedObject.likes = likes;
-                  //  await storeDataJSON(props.route.params.post, storedObject).then(() => {
-                  //   setCommentList(arr);
-                  // });
                   await storeDataJSON(props.route.params.post, arr).then(() => {
                     setCommentList(arr);
                   });
-                 
+
 
                   //await storeDataJSON((props.route.params.post).concat("-notifications-"), notificationList);
                   //await storeDataJSON(props.route.params.post, commentList);
