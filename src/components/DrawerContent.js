@@ -3,6 +3,7 @@ import { View, StyleSheet, Text } from 'react-native';
 import { Octicons, Entypo } from '@expo/vector-icons';
 import { DrawerItem } from '@react-navigation/drawer';
 import { Drawer } from 'react-native-paper';
+import * as firebase from 'firebase';
 
 import { AuthContext } from '../providers/AuthProvider';
 
@@ -20,10 +21,10 @@ const DrawerContent = (props) => {
                         <Drawer.Section style={styles.homeDrawerSection}>
                             <DrawerItem
                                 icon={() => (
-                                     <Entypo name="home" color="black" size={30} />
+                                    <Entypo name="home" color="black" size={30} />
                                 )}
                                 label="Home"
-                                style={{borderBottomColor: 'black'}}
+                                style={{ borderBottomColor: 'black' }}
                                 labelStyle={styles.labelStyle}
                                 onPress={() => { props.navigation.navigate('Home') }}
                             />
@@ -48,8 +49,16 @@ const DrawerContent = (props) => {
                             labelStyle={styles.labelStyle}
                             onPress={
                                 function () {
-                                    auth.setIsLoggedIn(false);
-                                    auth.setCurrentUser({});
+                                    firebase
+                                        .auth()
+                                        .signOut()
+                                        .then(()=>{
+                                            auth.setIsLoggedIn(false);
+                                            auth.setCurrentUser({});
+                                        })
+                                        .catch((error) => {
+                                            alert(error);
+                                        })
                                 }
                             }
                         />
@@ -73,13 +82,13 @@ const styles = StyleSheet.create({
         marginTop: 50,
     },
     homeDrawerSection: {
-        borderBottomWidth:1,
-        borderTopWidth:1,
+        borderBottomWidth: 1,
+        borderTopWidth: 1,
         borderBottomColor: 'black',
         borderTopColor: 'black',
     },
     profileDrawerSection: {
-        borderBottomWidth:1,
+        borderBottomWidth: 1,
         borderBottomColor: 'black',
     },
     bottomDrawerSection: {

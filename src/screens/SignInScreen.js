@@ -2,75 +2,85 @@ import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Input, Button, Card } from 'react-native-elements';
 import { FontAwesome, Entypo, Octicons, AntDesign } from '@expo/vector-icons';
-import {AuthContext} from '../providers/AuthProvider';
-import { getDataJSON, storeDataJSON } from "../functions/AsyncStorageFunctions"; 
+import { AuthContext } from '../providers/AuthProvider';
+import * as firebase from 'firebase';
+import Loading from './../components/Loading';
+
 
 const SignInScreen = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  return (
-    <AuthContext.Consumer>
-      {(auth) => (
-        <View style={styles.rootViewStyle}>
-          <Card containerStyle={styles.cardStyle}>
-            <Card.Title style={{ fontSize: 20, color: 'white' }}>Welcome to The Blogbuzzter !</Card.Title>
-            <Card.Divider />
-            <Input
-              inputContainerStyle={styles.inputStyle}
-              style={{ color: 'white' }}
-              leftIcon={<FontAwesome name="envelope" size={24} color="white" />}
-              placeholder='Email Address'
-              onChangeText={function (currentInput) {
-                setEmail(currentInput);
-              }}
-            />
-            <Input
-              inputContainerStyle={styles.inputStyle}
-              style={{ color: 'white' }}
-              leftIcon={<Entypo name="key" size={24} color="white" />}
-              placeholder='Password'
-              secureTextEntry={true}
-              onChangeText={function (currentInput) {
-                setPassword(currentInput);
-              }}
-            />
-            <Button
-              icon={<Octicons name="sign-in" size={24} color="white" />}
-              title="   Sign In"
-              titleStyle={{ color: "white" }}
-              buttonStyle={styles.outlineButtonStyle}
-              type='outline'
-              onPress={async function () {
-                let userData = await getDataJSON(email);
-                if (userData!= null && userData.password == password) {
-                  auth.setIsLoggedIn(true);
-                  auth.setCurrentUser(userData);
-                  await storeDataJSON("user",userData.email);
-                  //console.log(auth.isLoggedIn);
-                } else {
-                  alert("Login Failed!");
-                  //console.log(userData);
+  if (isLoading) {
+    return <Loading />;
+  } else {
+    return (
+      <AuthContext.Consumer>
+        {(auth) => (
+          <View style={styles.rootViewStyle}>
+            <Card containerStyle={styles.cardStyle}>
+              <Card.Title style={{ fontSize: 20, color: 'white' }}>Welcome to The Blogbuzzter !</Card.Title>
+              <Card.Divider />
+              <Input
+                inputContainerStyle={styles.inputStyle}
+                style={{ color: 'white' }}
+                leftIcon={<FontAwesome name="envelope" size={24} color="white" />}
+                placeholder='Email Address'
+                onChangeText={function (currentInput) {
+                  setEmail(currentInput);
+                }}
+              />
+              <Input
+                inputContainerStyle={styles.inputStyle}
+                style={{ color: 'white' }}
+                leftIcon={<Entypo name="key" size={24} color="white" />}
+                placeholder='Password'
+                secureTextEntry={true}
+                onChangeText={function (currentInput) {
+                  setPassword(currentInput);
+                }}
+              />
+              <Button
+                icon={<Octicons name="sign-in" size={24} color="white" />}
+                title="   Sign In"
+                titleStyle={{ color: "white" }}
+                buttonStyle={styles.outlineButtonStyle}
+                type='outline'
+                onPress={() => {
+                  setIsLoading(true);
+                  firebase
+                    .auth()
+                    .signInWithEmailAndPassword(email, password)
+                    .then((userCreds) => {
+                      setIsLoading(false);
+                      auth.setIsLoggedIn(true);
+                      auth.setCurrentUser(userCreds.user);
+                    })
+                    .catch((error) => {
+                      setIsLoading(false);
+                      alert(error);
+                    });
+                }}
+              />
+              <Button
+                icon={<AntDesign name="user" size={24} color="white" />}
+                title="   Don't have an account?"
+                titleStyle={{ color: "white" }}
+                buttonStyle={styles.clearButtonStyle}
+                type='clear'
+                onPress={
+                  function () {
+                    props.navigation.navigate("SignUp")
+                  }
                 }
-              }}
-            />
-            <Button
-              icon={<AntDesign name="user" size={24} color="white" />}
-              title="   Don't have an account?"
-              titleStyle={{ color: "white" }}
-              buttonStyle={styles.clearButtonStyle}
-              type='clear'
-              onPress={
-                function () {
-                  props.navigation.navigate("SignUp")
-                }
-              }
-            />
-          </Card>
-        </View>
-      )}
-    </AuthContext.Consumer>
-  );
+              />
+            </Card>
+          </View>
+        )}
+      </AuthContext.Consumer>
+    );
+  }
 }
 
 const styles = StyleSheet.create({

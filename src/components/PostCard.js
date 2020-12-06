@@ -14,47 +14,48 @@ import { getDataJSON, storeDataJSON } from "../functions/AsyncStorageFunctions";
 import { AuthContext } from '../providers/AuthProvider';
 
 const PostCard = (props) => {
+    //console.log(props);
     const [likes, setLikes] = useState(0);
     const [commentList, setCommentList] = useState([]);
     const [notificationList, setNotificationList] = useState([]);
 
-    const getLikeData = async () => {
-        await getDataJSON(props.post.concat("likes")).then((data) => {
-            if (data == null) {
-                setLikes(0);
-            } else setLikes(data);
-        });
-    };
-    useEffect(() => {
-        getLikeData();
-    }, [])
-    const getCommentData = async () => {
-        await getDataJSON(props.post).then((data) => {
-            if (data == null) {
-                setCommentList([]);
-            } else setCommentList(data);
-        });
-    };
+    // const getLikeData = async () => {
+    //     await getDataJSON(props.post.concat("likes")).then((data) => {
+    //         if (data == null) {
+    //             setLikes(0);
+    //         } else setLikes(data);
+    //     });
+    // };
+    // useEffect(() => {
+    //     getLikeData();
+    // }, [])
+    // const getCommentData = async () => {
+    //     await getDataJSON(props.post).then((data) => {
+    //         if (data == null) {
+    //             setCommentList([]);
+    //         } else setCommentList(data);
+    //     });
+    // };
 
-    getCommentData();
+    // getCommentData();
 
-    const getNotificationData = async () => {
-        await getDataJSON(props.email.concat("notifications")).then((data) => {
-            if (data == null) {
-                setNotificationList([]);
-            } else setNotificationList(data);
-        });
-    };
+    // const getNotificationData = async () => {
+    //     await getDataJSON(props.email.concat("notifications")).then((data) => {
+    //         if (data == null) {
+    //             setNotificationList([]);
+    //         } else setNotificationList(data);
+    //     });
+    // };
 
 
-    useEffect(() => {
-        getNotificationData();
-    }, [])
+    // useEffect(() => {
+    //     getNotificationData();
+    // }, [])
 
-    let commentButtonTitle = "";
-    commentButtonTitle = "Comment(".concat(commentList.length.toString()).concat(")");
-    let likeButtonTitle = "";
-    likeButtonTitle = "Like(".concat(likes.toString()).concat(")");
+    let commentButtonTitle = "  Comment (20)";
+    //commentButtonTitle = "Comment(".concat(commentList.length.toString()).concat(")");
+    let likeButtonTitle = "  Like (11)";
+    //likeButtonTitle = "Like(".concat(likes.toString()).concat(")");
     const navigation = useNavigation();
 
     return (
@@ -81,10 +82,10 @@ const PostCard = (props) => {
                                 icon={<Octicons name="trashcan" size={24} color="white" />}
                                 buttonStyle={{ backgroundColor: '#6B778D' }}
                                 type='solid'
-                                onPress={async function () {
-                                    await removeData('posts');
-                                    alert("Post Deleted Sucessfully!");
-                                }}
+                                // onPress={async function () {
+                                //     await removeData('posts');
+                                //     alert("Post Deleted Sucessfully!");
+                                // }}
                             />
                         </View>
                         <Text style={{ fontStyle: "italic", color: "white" }}> Posted on {props.date}</Text>

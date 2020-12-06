@@ -130,17 +130,11 @@ const PostScreen = (props) => {
                     setCommentList(arr);
                   });
 
-
-                  //await storeDataJSON((props.route.params.post).concat("-notifications-"), notificationList);
-                  //await storeDataJSON(props.route.params.post, commentList);
-                  //await storeDataJSON(props.route.params.post, storedObject);
-                  //alert("Post Successful!");
-                  //setNewComment("");
                 }}
               />
             </Card>
           </View>
-          <FlatList
+          {/* <FlatList
             data={commentList}
             renderItem={commentItem => (
               <Comments
@@ -149,7 +143,7 @@ const PostScreen = (props) => {
                 comment={commentItem.item.comment}
               />
             )}
-          />
+          /> */}
         </View>
       )}
     </AuthContext.Consumer>
