@@ -69,7 +69,7 @@ const SignInScreen = (props) => {
                   .auth()
                   .createUserWithEmailAndPassword(email, password)
                   .then((userCreds) => {
-                    userCreds.user.updateProfile({ displayName: name });
+                    userCreds.user.updateProfile({ displayName: name});
                     firebase
                       .firestore()
                       .collection('users')
@@ -78,6 +78,7 @@ const SignInScreen = (props) => {
                         name: name,
                         studentID: studentID,
                         email: email,
+                        photo_uri: "N/A",
                       })
                       .then(() => {
                         setIsLoading(false);

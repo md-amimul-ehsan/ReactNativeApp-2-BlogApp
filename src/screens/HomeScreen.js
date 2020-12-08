@@ -10,7 +10,7 @@ import { Entypo } from "@expo/vector-icons";
 import * as firebase from 'firebase';
 import "firebase/firestore";
 import Loading from './../components/Loading';
-
+import moment from "moment";
 import PostCard from '../components/PostCard';
 import { AuthContext } from "../providers/AuthProvider";
 
@@ -20,36 +20,23 @@ const HomeScreen = (props) => {
   const [postList, setPostList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const loadPosts = () => {
+  const loadPosts = async () => {
     setIsLoading(true);
     firebase
       .firestore()
       .collection('posts')
-      .orderBy('created_at','desc')
-      .get()
-      .then((postList) => {
+      .orderBy('created_at', 'desc')
+      .onSnapshot((querySnapShot) => {
         setIsLoading(false);
         let posts = [];
-        postList.forEach(postItem => {
+        querySnapShot.forEach(doc => {
           posts.push({
-            id: postItem.id,
-            data: postItem.data(),
+            id: doc.id,
+            data: doc.data(),
           });
         });
         setPostList(posts);
       })
-
-      // .onSnapshot(querySnapShot => {
-      //   setIsLoading(false);
-      //   let posts = [];
-      //   querySnapShot.forEach(doc => {
-      //     posts.push({
-      //       id: doc.id,
-      //       data: doc.data(),
-      //     });
-      //   });
-      //   setPostList(posts);
-      // })
       .catch((error) => {
         setIsLoading(false);
         alert(error);
@@ -103,12 +90,14 @@ const HomeScreen = (props) => {
                       author: auth.currentUser.displayName,
                       body: newPostText,
                       created_at: firebase.firestore.Timestamp.now(),
-                      likes: [],
+                      creating_date: moment().format("DD MMM, YYYY"),
+                      notifications: [],
                       comments: [],
+                      likes: 0,
                     })
                     .then(() => {
                       setIsLoading(false);
-                      alert('Post created successfully!');
+                      //alert('Post created successfully!');
                     })
                     .catch((error) => {
                       setIsLoading(false);
@@ -122,9 +111,10 @@ const HomeScreen = (props) => {
               renderItem={postItem => (
                 <PostCard
                   name={postItem.item.data.author}
-                  date={postItem.item.data.created_at.toDate().toString()}
+                  date={postItem.item.data.creating_date}
                   post={postItem.item.data.body}
                   email={postItem.item.data.userID}
+                  postID={postItem.item.id}
                 />
               )}
             />

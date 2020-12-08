@@ -5,8 +5,9 @@ import { MaterialIcons } from '@expo/vector-icons';
 import ImagePicker from 'react-native-image-picker';
 
 import { AuthContext } from '../providers/AuthProvider';
-import { removeData } from '../functions/AsyncStorageFunctions';
 import ImagePickerExample from '../components/ImagePicker';
+import * as firebase from 'firebase';
+import "firebase/firestore";
 
 const ProfileScreen = (props) => {
   return (
@@ -25,7 +26,7 @@ const ProfileScreen = (props) => {
             }}
           />
           <View style={styles.contentViewStyle}>
-            <ImagePickerExample />
+            <ImagePickerExample userID={auth.currentUser.uid}/>
             <Card containerStyle={styles.cardStyle}>
               <Text style={styles.nameTextStyle}>NAME: {auth.currentUser.name}</Text>
               <Card.Divider />
@@ -42,13 +43,21 @@ const ProfileScreen = (props) => {
                 titleStyle={{ color: "white" }}
                 buttonStyle={styles.outlineButtonStyle}
                 type='outline'
-                onPress={async function () {
-                  await removeData(auth.currentUser.email);
-                  alert("Profile Deleted Sucessfully!");
-                  auth.setIsLoggedIn(false);
-                  auth.setCurrentUser({});
-                }
-                }
+                onPress={function () {
+                  firebase
+                    .firestore()
+                    .collection('users')
+                    .doc(auth.currentUser.uid)
+                    .delete()
+                    .then(() => {
+                      auth.setIsLoggedIn(false);
+                      auth.setCurrentUser({});
+                      //props.navigation.navigate("SignIn");
+                    })
+                    .catch((error) => {
+                      alert(error);
+                    })
+                }}
               />
             </View>
           </View>

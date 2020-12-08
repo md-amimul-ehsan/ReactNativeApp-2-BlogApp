@@ -4,9 +4,35 @@ import { Button } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import { Entypo } from '@expo/vector-icons';
+import * as firebase from 'firebase';
+import Loading from './Loading';
+import "firebase/firestore";
 
-const ImagePickerExample = () => {
+const ImagePickerExample = (props) => {
   const [image, setImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const loadPhoto = async () => {
+    setIsLoading(true);
+    firebase
+      .firestore()
+      .collection('users')
+      .doc(props.userID)
+      .onSnapshot((querySnapShot) => {
+        setIsLoading(false);
+        if (querySnapShot.data().photo_uri != "N/A") {
+          setImage(querySnapShot.data().photo_uri);
+        }
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        alert(error);
+      })
+  }
+
+  useEffect(() => {
+    loadPhoto();
+  }, [])
 
   useEffect(() => {
     (async () => {
@@ -27,26 +53,45 @@ const ImagePickerExample = () => {
       quality: 1,
     });
 
-    console.log(result);
+    //console.log(result);
 
     if (!result.cancelled) {
+      setIsLoading(true);
+      firebase
+        .firestore()
+        .collection('users')
+        .doc(props.userID)
+        .update({
+          photo_uri: result.uri
+        })
+        .then(() => {
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          alert(error);
+        })
       setImage(result.uri);
     }
   };
 
-  return (
-    <View >
-      {image && <Image source={{ uri: image }} style={styles.photoStyle} />}
-      <Button 
-        title="   Choose Photo" 
-        onPress={pickImage} 
-        icon ={<Entypo name="camera" size={24} color="white" />}
-        buttonStyle={styles.outlineButtonStyle}
-        titleStyle={{ color: "white" }}
-        type='outline'
-      />
-    </View>
-  );
+  if (isLoading) {
+    return <Loading />;
+  } else {
+    return (
+      <View >
+        {image && <Image source={{ uri: image }} style={styles.photoStyle} />}
+        <Button
+          title="   Choose Photo"
+          onPress={pickImage}
+          icon={<Entypo name="camera" size={24} color="white" />}
+          buttonStyle={styles.outlineButtonStyle}
+          titleStyle={{ color: "white" }}
+          type='outline'
+        />
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
