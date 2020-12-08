@@ -15,7 +15,7 @@ const DrawerContent = (props) => {
                     <View style={styles.drawerContent}>
                         <Drawer.Section>
                             <Text style={styles.textStyle}>
-                                Welcome {auth.currentUser.name} !
+                                Welcome {auth.currentUser.displayName} !
                             </Text>
                         </Drawer.Section>
                         <Drawer.Section style={styles.homeDrawerSection}>
