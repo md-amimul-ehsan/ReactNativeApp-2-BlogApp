@@ -4,16 +4,13 @@ import { Text, Header, Input, Card } from "react-native-elements";
 import NotificationCard from '../components/NotificationCard';
 import { getDataJSON, storeDataJSON, removeData } from "../functions/AsyncStorageFunctions";
 import { AuthContext } from '../providers/AuthProvider';
+import * as firebase from 'firebase';
+import 'firebase/firestore';
 
 const NotificationScreen = (props) => {
-  // const [notificationList, setNotificationList] = useState([]);
-  // const getData = async () => {
-  //   setNotificationList(await getDataJSON());
-  // }
-  // getData();
-  //console.log(props);
-  const [userID, setUserID] = useState("b");
+  const [userID, setUserID] = useState("");
   const [notificationList, setNotificationList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const getUserData = async () => {
     await getDataJSON("user").then((data) => {
       if (data == null) {
@@ -21,7 +18,8 @@ const NotificationScreen = (props) => {
       } else setUserID(data);
     });
   };
-  const LoadNotificationData = async () => {
+
+  const loadNotificationData = async () => {
     setIsLoading(true);
     firebase
       .firestore()
@@ -42,10 +40,10 @@ const NotificationScreen = (props) => {
   }, [])
 
   useEffect(() => {
-    LoadNotificationData();
-  }, [])
-
+    loadNotificationData();
+  }, [userID])
   
+  //console.log(notificationList);
 
   return (
     <View style={styles.rootViewStyle}>
