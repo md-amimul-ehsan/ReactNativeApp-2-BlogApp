@@ -68,7 +68,6 @@ const NotificationScreen = (props) => {
                 notification_from={notificationItem.item.notification_from}
                 date={notificationItem.item.posting_date}
                 post={notificationItem.item.post}
-                notification={notificationItem.item.notification}
                 type={notificationItem.item.type}
                 postID={notificationItem.item.postID}
                 authorID={notificationItem.item.authorID}
