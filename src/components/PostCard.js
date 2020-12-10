@@ -88,7 +88,7 @@ const PostCard = (props) => {
                                     activeOpacity={1}
                                 />
                                 <Text h4Style={{ padding: 10, color: 'white' }} h4>
-                                    {props.name}
+                                    {props.author}
                                 </Text>
                                 <Button
                                     icon={<Octicons name="trashcan" size={24} color="white" />}
