@@ -175,40 +175,7 @@ const PostScreen = (props) => {
                         alert(error);
                       })
                   }
-                    //   async () => {
-                    //   let arr = [
-                    //     ...commentList,
-                    //     {
-                    //       name: auth.currentUser.name,
-                    //       email: auth.currentUser.email,
-                    //       date: moment().format("DD MMM, YYYY"),
-                    //       comment: newComment,
-                    //       key: newComment,
-                    //     },
-                    //   ];
-                    //   if (auth.currentUser.email != props.route.params.email) {
-                    //     let arr1 = [
-                    //       ...notificationList,
-                    //       {
-                    //         name: auth.currentUser.name,
-                    //         email: auth.currentUser.email,
-                    //         date: moment().format("DD MMM, YYYY"),
-                    //         post: props.route.params.post,
-                    //         notification: auth.currentUser.name.concat(" commented on your post"),
-                    //         key: newComment,
-                    //         type: "comment",
-                    //       }
-                    //     ];
-                    //     await storeDataJSON(props.route.params.email.concat("notifications"), arr1).then(() => {
-                    //       setNotificationList(arr1);
-                    //     });
-                    //   }
-
-                    //   await storeDataJSON(props.route.params.post, arr).then(() => {
-                    //     setCommentList(arr);
-                    //   });
-
-                    // }
+                    
                   }
                 />
               </Card>
