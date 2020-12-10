@@ -79,6 +79,7 @@ const SignInScreen = (props) => {
                         studentID: studentID,
                         email: email,
                         photo_uri: "N/A",
+                        notifications:[],
                       })
                       .then(() => {
                         setIsLoading(false);

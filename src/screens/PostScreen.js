@@ -11,6 +11,7 @@ import moment from "moment";
 import * as firebase from 'firebase';
 import Loading from './../components/Loading';
 import "firebase/firestore";
+import { not } from 'react-native-reanimated';
 
 const PostScreen = (props) => {
   //console.log(props.route.params.postID);
@@ -27,8 +28,23 @@ const PostScreen = (props) => {
       .doc(props.route.params.postID)
       .onSnapshot((querySnapShot) => {
         setIsLoading(false);
-        
         setCommentList(querySnapShot.data().comments);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        alert(error);
+      })
+  }
+
+  const LoadNotificationData = async () => {
+    setIsLoading(true);
+    firebase
+      .firestore()
+      .collection('users')
+      .doc(props.route.params.authorID)
+      .onSnapshot((querySnapShot) => {
+        setIsLoading(false);
+        setNotificationList(querySnapShot.data().notifications);
       })
       .catch((error) => {
         setIsLoading(false);
@@ -38,8 +54,9 @@ const PostScreen = (props) => {
 
   useEffect(() => {
     loadComments();
+    LoadNotificationData();
   }, [])
-  
+
   if (isLoading) {
     return <Loading />;
   } else {
@@ -73,7 +90,7 @@ const PostScreen = (props) => {
                     activeOpacity={1}
                   />
                   <Text h4Style={{ padding: 10, color: 'white' }} h4>
-                    {props.route.params.name}
+                    {props.route.params.author}
                   </Text>
 
                 </View>
@@ -106,16 +123,23 @@ const PostScreen = (props) => {
                     setIsLoading(true);
                     firebase
                       .firestore()
-                      .collection('posts')
-                      .doc(props.route.params.postID)
+                      .collection('users')
+                      .doc(props.route.params.authorID)
                       .set(
                         {
-                          notifications: [{
-                            type: "comment",
-                            notification_from: auth.currentUser.displayName,
-                            notified_at: firebase.firestore.Timestamp.now().toString(),
-                            notifying_date: moment().format("DD MMM, YYYY"),
-                          }]
+                          notifications: [
+                            ...notificationList,
+                            {
+                              type: "comment",
+                              notification_from: auth.currentUser.displayName,
+                              notified_at: firebase.firestore.Timestamp.now().toString(),
+                              notifying_date: moment().format("DD MMM, YYYY"),
+                              posting_date: props.route.params.date,
+                              postID: props.route.params.postID,
+                              authorID: props.route.params.authorID,
+                              post: props.route.params.post,
+                              author: props.route.params.author,
+                            }]
                         },
                         { merge: true }
                       )
@@ -133,7 +157,8 @@ const PostScreen = (props) => {
                       .doc(props.route.params.postID)
                       .set(
                         {
-                          comments: [{
+                          comments: [...commentList,
+                          {
                             comment: newComment,
                             commented_by: auth.currentUser.displayName,
                             commented_at: firebase.firestore.Timestamp.now().toString(),

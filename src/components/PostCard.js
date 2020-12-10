@@ -20,28 +20,46 @@ const PostCard = (props) => {
     //console.log(props);
     const [likes, setLikes] = useState(0);
     const [commentList, setCommentList] = useState([]);
+    const [notificationList, setNotificationList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    const loadComments = async () => {
+    const LoadCommentAndLikeData = async () => {
         setIsLoading(true);
         firebase
-          .firestore()
-          .collection('posts')
-          .doc(props.postID)
-          .onSnapshot((querySnapShot) => {
-            setIsLoading(false);
-            setLikes(querySnapShot.data().likes);
-            setCommentList(querySnapShot.data().comments);
-          })
-          .catch((error) => {
-            setIsLoading(false);
-            alert(error);
-          })
-      }
-    
-      useEffect(() => {
-        loadComments();
-      }, [])
+            .firestore()
+            .collection('posts')
+            .doc(props.postID)
+            .onSnapshot((querySnapShot) => {
+                setIsLoading(false);
+                setLikes(querySnapShot.data().likes);
+                setCommentList(querySnapShot.data().comments);
+            })
+            .catch((error) => {
+                setIsLoading(false);
+                alert(error);
+            })
+    }
+
+    const LoadNotificationData = async () => {
+        setIsLoading(true);
+        firebase
+            .firestore()
+            .collection('users')
+            .doc(props.authorID)
+            .onSnapshot((querySnapShot) => {
+                setIsLoading(false);
+                setNotificationList(querySnapShot.data().notifications);
+            })
+            .catch((error) => {
+                setIsLoading(false);
+                alert(error);
+            })
+    }
+
+    useEffect(() => {
+        LoadCommentAndLikeData();
+        LoadNotificationData();
+    }, [])
 
     let commentButtonTitle = "  Comment (20)";
     commentButtonTitle = " Comment (".concat(commentList.length.toString()).concat(")");
@@ -114,29 +132,45 @@ const PostCard = (props) => {
                                         setIsLoading(true);
                                         firebase
                                             .firestore()
+                                            .collection('users')
+                                            .doc(props.authorID)
+                                            .set(
+                                                {
+                                                    notifications: [
+                                                        ...notificationList,
+                                                        {
+                                                            type: "like",
+                                                            notification_from: auth.currentUser.displayName,
+                                                            notified_at: firebase.firestore.Timestamp.now().toString(),
+                                                            notifying_date: moment().format("DD MMM, YYYY"),
+                                                            posting_date: props.date,
+                                                            postID: props.postID,
+                                                            authorID: props.authorID,
+                                                            post: props.post,
+                                                            author: props.author,
+                                                        }]
+                                                },
+                                                { merge: true }
+                                            )
+                                            .then(() => {
+                                                setIsLoading(false);
+                                            })
+                                            .catch((error) => {
+                                                setIsLoading(false);
+                                                alert(error);
+                                            })
+
+                                        setIsLoading(true);
+                                        firebase
+                                            .firestore()
                                             .collection('posts')
                                             .doc(props.postID)
                                             .set(
                                                 {
-                                                    notifications: [{
-                                                        type: "like",
-                                                        notification_from: auth.currentUser.displayName,
-                                                        notified_at: firebase.firestore.Timestamp.now().toString(),
-                                                        notifying_date: moment().format("DD MMM, YYYY"),
-                                                    }],
-                                                    likes: likes+1,
+                                                    likes: likes + 1
                                                 },
                                                 { merge: true }
                                             )
-                                            // .update({
-                                            //     notifications: firebase.firestore.FieldValue.arrayUnion(
-                                            //         [{
-                                            //             type: "like",
-                                            //             notification_from: auth.currentUser.displayName,
-                                            //             notified_at: firebase.firestore.Timestamp.now().toString()
-                                            //         }]
-                                            //     )
-                                            // })
                                             .then(() => {
                                                 setIsLoading(false);
                                             })
@@ -145,36 +179,6 @@ const PostCard = (props) => {
                                                 alert(error);
                                             })
                                     }
-                                        //    async () => {
-                                        //     let numberOfLikes = likes + 1;
-                                        //     await storeDataJSON(props.post.concat("likes"), numberOfLikes).then(() => {
-                                        //         setLikes(numberOfLikes);
-                                        //     });
-
-                                        //     if (auth.currentUser.email != props.email) {
-                                        //         let arr2 = [
-                                        //             ...notificationList,
-                                        //             {
-                                        //                 name: props.name,
-                                        //                 email: props.email,
-                                        //                 date: moment().format("DD MMM, YYYY"),
-                                        //                 post: props.post,
-                                        //                 notification: auth.currentUser.name.concat(" liked your post"),
-                                        //                 key: likes,
-                                        //                 type: "like",
-                                        //             },
-                                        //         ];
-
-
-                                        //         await storeDataJSON(props.email.concat("notifications"), arr2).then(() => {
-                                        //             setNotificationList(arr2);
-                                        //         });
-
-                                        //     }
-
-
-
-                                        // }
                                     }
                                 />
                                 <Button
@@ -185,7 +189,7 @@ const PostCard = (props) => {
                                     icon={<FontAwesome5 name="comment" size={24} color="white" />}
                                     onPress={
                                         function () {
-                                            navigation.navigate("Post", { name: props.name, post: props.post, date: props.date, email: props.email, postID: props.postID });
+                                            navigation.navigate("Post", { author: props.author, post: props.post, date: props.date, authorID: props.authorID, postID: props.postID });
                                         }
                                     }
                                 />

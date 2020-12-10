@@ -5,12 +5,14 @@ import { FontAwesome, Entypo, Octicons, AntDesign } from '@expo/vector-icons';
 import { AuthContext } from '../providers/AuthProvider';
 import * as firebase from 'firebase';
 import Loading from './../components/Loading';
+import storeDataJSON from '../functions/AsyncStorageFunctions';
 
 
 const SignInScreen = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [uid, setuid] = useState("");
 
   if (isLoading) {
     return <Loading />;
@@ -47,12 +49,13 @@ const SignInScreen = (props) => {
                 titleStyle={{ color: "white" }}
                 buttonStyle={styles.outlineButtonStyle}
                 type='outline'
-                onPress={() => {
+                onPress={async () => {
                   setIsLoading(true);
                   firebase
                     .auth()
                     .signInWithEmailAndPassword(email, password)
                     .then((userCreds) => {
+                      setuid(userCreds.user.uid);
                       setIsLoading(false);
                       auth.setIsLoggedIn(true);
                       auth.setCurrentUser(userCreds.user);
@@ -61,6 +64,8 @@ const SignInScreen = (props) => {
                       setIsLoading(false);
                       alert(error);
                     });
+                  console.log(uid);
+                  await storeDataJSON("user",uid);
                 }}
               />
               <Button

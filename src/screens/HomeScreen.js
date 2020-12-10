@@ -91,7 +91,6 @@ const HomeScreen = (props) => {
                       body: newPostText,
                       created_at: firebase.firestore.Timestamp.now(),
                       creating_date: moment().format("DD MMM, YYYY"),
-                      notifications: [],
                       comments: [],
                       likes: 0,
                     })
@@ -110,10 +109,10 @@ const HomeScreen = (props) => {
               data={postList}
               renderItem={postItem => (
                 <PostCard
-                  name={postItem.item.data.author}
+                  author={postItem.item.data.author}
                   date={postItem.item.data.creating_date}
                   post={postItem.item.data.body}
-                  email={postItem.item.data.userID}
+                  authorID={postItem.item.data.userID}
                   postID={postItem.item.id}
                 />
               )}

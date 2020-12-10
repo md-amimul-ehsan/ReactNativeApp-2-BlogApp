@@ -6,6 +6,15 @@ import { FontAwesome, Feather, AntDesign } from '@expo/vector-icons';
 
 const NotificationCard = (props) => {
     //console.log(props);
+    let notificationText = "";
+    if (props.type == "comment") {
+        notificationText = props.notification_from;
+        notificationText = notificationText.concat(" commented on your post");
+    }
+    else {
+        notificationText = props.notification_from;
+        notificationText = notificationText.concat(" liked your post");
+    }
     const useStackNavigation = useNavigation();
     return (
 
@@ -15,10 +24,10 @@ const NotificationCard = (props) => {
                 <Button buttonStyle={styles.buttonStyle}
                     type="clear"
                     icon={<FontAwesome name="comment" size={24} color='white' />}
-                    title={props.notification}
+                    title={notificationText}
                     titleStyle={{ color: 'white' }}
                     onPress={function () {
-                        useStackNavigation.navigate("Post", { post: props.post, name: props.name, date: props.date, email: props.email });
+                        useStackNavigation.navigate("Post", { post: props.post, name: props.name, date: props.date });
                     }}
 
                 /> :
@@ -28,7 +37,7 @@ const NotificationCard = (props) => {
                     title={props.notification}
                     titleStyle={{ color: 'white' }}
                     onPress={function () {
-                        useStackNavigation.navigate("Post", { post: props.post, name: props.name, date: props.date, email: props.email });
+                        useStackNavigation.navigate("Post", { post: props.post, author: props.author, date: props.date, postID: props.postID, authorID: props.authorID });
                     }}
 
                 />
