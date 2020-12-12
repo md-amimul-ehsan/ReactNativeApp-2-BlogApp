@@ -103,7 +103,7 @@ const PostCard = (props) => {
                                             .doc(props.postID)
                                             .delete()
                                             .then(() => {
-                                                alert('post deleted successfully');
+                                                //alert('post deleted successfully');
                                             })
                                             .catch((error) => {
                                                 alert(error);
@@ -133,7 +133,7 @@ const PostCard = (props) => {
                                         icon={<AntDesign name="like1" size={24} color="white" />}
                                         onPress={function () {
                                             let index = likerList.indexOf(props.userID);
-                                            likerList.splice(index,1);
+                                            likerList.splice(index, 1);
                                             setIsLoading(true);
                                             firebase
                                                 .firestore()

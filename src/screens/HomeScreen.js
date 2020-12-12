@@ -106,18 +106,18 @@ const HomeScreen = (props) => {
               />
             </Card>
             <FlatList
-              data={postList}
-              renderItem={postItem => (
-                <PostCard
-                  author={postItem.item.data.author}
-                  date={postItem.item.data.creating_date}
-                  post={postItem.item.data.body}
-                  authorID={postItem.item.data.userID}
-                  postID={postItem.item.id}
-                  userID={auth.currentUser.uid}
-                />
-              )}
-            />
+                data={postList}
+                renderItem={postItem => (
+                  <PostCard
+                    author={postItem.item.data.author}
+                    date={postItem.item.data.creating_date}
+                    post={postItem.item.data.body}
+                    authorID={postItem.item.data.userID}
+                    postID={postItem.item.id}
+                    userID={auth.currentUser.uid}
+                  />
+                )}
+              />
 
           </View>
         )}
