@@ -120,36 +120,38 @@ const PostScreen = (props) => {
                   type="outline"
                   icon={<FontAwesome5 name="comment" size={24} color="white" />}
                   onPress={function () {
-                    setIsLoading(true);
-                    firebase
-                      .firestore()
-                      .collection('users')
-                      .doc(props.route.params.authorID)
-                      .set(
-                        {
-                          notifications: [
-                            ...notificationList,
-                            {
-                              type: "comment",
-                              notification_from: auth.currentUser.displayName,
-                              notified_at: firebase.firestore.Timestamp.now().toString(),
-                              notifying_date: moment().format("DD MMM, YYYY"),
-                              posting_date: props.route.params.date,
-                              postID: props.route.params.postID,
-                              authorID: props.route.params.authorID,
-                              post: props.route.params.post,
-                              author: props.route.params.author,
-                            }]
-                        },
-                        { merge: true }
-                      )
-                      .then(() => {
-                        setIsLoading(false);
-                      })
-                      .catch((error) => {
-                        setIsLoading(false);
-                        alert(error);
-                      })
+                    if (auth.currentUser.uid != props.route.params.authorID) {
+                      setIsLoading(true);
+                      firebase
+                        .firestore()
+                        .collection('users')
+                        .doc(props.route.params.authorID)
+                        .set(
+                          {
+                            notifications: [
+                              ...notificationList,
+                              {
+                                type: "comment",
+                                notification_from: auth.currentUser.displayName,
+                                notified_at: firebase.firestore.Timestamp.now().toString(),
+                                notifying_date: moment().format("DD MMM, YYYY"),
+                                posting_date: props.route.params.date,
+                                postID: props.route.params.postID,
+                                authorID: props.route.params.authorID,
+                                post: props.route.params.post,
+                                author: props.route.params.author,
+                              }]
+                          },
+                          { merge: true }
+                        )
+                        .then(() => {
+                          setIsLoading(false);
+                        })
+                        .catch((error) => {
+                          setIsLoading(false);
+                          alert(error);
+                        })
+                    }
 
                     firebase
                       .firestore()
@@ -174,9 +176,7 @@ const PostScreen = (props) => {
                         setIsLoading(false);
                         alert(error);
                       })
-                  }
-                    
-                  }
+                  }}
                 />
               </Card>
             </View>

@@ -92,6 +92,7 @@ const HomeScreen = (props) => {
                       created_at: firebase.firestore.Timestamp.now(),
                       creating_date: moment().format("DD MMM, YYYY"),
                       comments: [],
+                      likes_from: [],
                       likes: 0,
                     })
                     .then(() => {
@@ -114,6 +115,7 @@ const HomeScreen = (props) => {
                   post={postItem.item.data.body}
                   authorID={postItem.item.data.userID}
                   postID={postItem.item.id}
+                  userID={auth.currentUser.uid}
                 />
               )}
             />

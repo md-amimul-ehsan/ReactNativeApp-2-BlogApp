@@ -21,6 +21,8 @@ const PostCard = (props) => {
     const [likes, setLikes] = useState(0);
     const [commentList, setCommentList] = useState([]);
     const [notificationList, setNotificationList] = useState([]);
+    const [likerList, setLikerList] = useState([]);
+    const [likeStatus, setLikeStatus] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const LoadCommentAndLikeData = async () => {
@@ -33,6 +35,8 @@ const PostCard = (props) => {
                 setIsLoading(false);
                 setLikes(querySnapShot.data().likes);
                 setCommentList(querySnapShot.data().comments);
+                setLikeStatus(querySnapShot.data().likes_from.includes(props.userID));
+                setLikerList(querySnapShot.data().likes_from);
             })
             .catch((error) => {
                 setIsLoading(false);
@@ -122,65 +126,103 @@ const PostCard = (props) => {
                             <View
                                 style={{ flexDirection: "row", justifyContent: "space-between" }}
                             >
-                                <Button
-                                    type="outline"
-                                    title={likeButtonTitle}
-                                    titleStyle={{ color: 'white' }}
-                                    buttonStyle={{ borderColor: 'white', borderWidth: 1, borderRadius: 10 }}
-                                    icon={<AntDesign name="like2" size={24} color="white" />}
-                                    onPress={function () {
-                                        setIsLoading(true);
-                                        firebase
-                                            .firestore()
-                                            .collection('users')
-                                            .doc(props.authorID)
-                                            .set(
-                                                {
-                                                    notifications: [
-                                                        ...notificationList,
-                                                        {
-                                                            type: "like",
-                                                            notification_from: auth.currentUser.displayName,
-                                                            notified_at: firebase.firestore.Timestamp.now().toString(),
-                                                            notifying_date: moment().format("DD MMM, YYYY"),
-                                                            posting_date: props.date,
-                                                            postID: props.postID,
-                                                            authorID: props.authorID,
-                                                            post: props.post,
-                                                            author: props.author,
-                                                        }]
-                                                },
-                                                { merge: true }
-                                            )
-                                            .then(() => {
-                                                setIsLoading(false);
-                                            })
-                                            .catch((error) => {
-                                                setIsLoading(false);
-                                                alert(error);
-                                            })
+                                {likeStatus ?
+                                    <Button
+                                        type="outline"
+                                        title={likeButtonTitle}
+                                        titleStyle={{ color: 'white' }}
+                                        buttonStyle={{ borderColor: 'white', borderWidth: 1, borderRadius: 10 }}
+                                        icon={<AntDesign name="like1" size={24} color="white" />}
+                                        onPress={function () {
+                                            let index = likerList.indexOf(props.userID);
+                                            likerList.splice(index,1);
+                                            setIsLoading(true);
+                                            firebase
+                                                .firestore()
+                                                .collection('posts')
+                                                .doc(props.postID)
+                                                .set(
+                                                    {
+                                                        likes: likes - 1,
+                                                        likes_from: likerList
+                                                    },
+                                                    { merge: true }
+                                                )
+                                                .then(() => {
+                                                    setIsLoading(false);
+                                                })
+                                                .catch((error) => {
+                                                    setIsLoading(false);
+                                                    alert(error);
+                                                })
 
-                                        setIsLoading(true);
-                                        firebase
-                                            .firestore()
-                                            .collection('posts')
-                                            .doc(props.postID)
-                                            .set(
-                                                {
-                                                    likes: likes + 1
-                                                },
-                                                { merge: true }
-                                            )
-                                            .then(() => {
-                                                setIsLoading(false);
-                                            })
-                                            .catch((error) => {
-                                                setIsLoading(false);
-                                                alert(error);
-                                            })
-                                    }
-                                    }
-                                />
+                                        }}
+                                    /> :
+                                    <Button
+                                        type="outline"
+                                        title={likeButtonTitle}
+                                        titleStyle={{ color: 'white' }}
+                                        buttonStyle={{ borderColor: 'white', borderWidth: 1, borderRadius: 10 }}
+                                        icon={<AntDesign name="like2" size={24} color="white" />}
+                                        onPress={function () {
+                                            if (auth.currentUser.uid != props.authorID) {
+                                                setIsLoading(true);
+                                                firebase
+                                                    .firestore()
+                                                    .collection('users')
+                                                    .doc(props.authorID)
+                                                    .set(
+                                                        {
+                                                            notifications: [
+                                                                ...notificationList,
+                                                                {
+                                                                    type: "like",
+                                                                    notification_from: auth.currentUser.displayName,
+                                                                    notified_at: firebase.firestore.Timestamp.now().toString(),
+                                                                    notifying_date: moment().format("DD MMM, YYYY"),
+                                                                    posting_date: props.date,
+                                                                    postID: props.postID,
+                                                                    authorID: props.authorID,
+                                                                    post: props.post,
+                                                                    author: props.author,
+                                                                }]
+                                                        },
+                                                        { merge: true }
+                                                    )
+                                                    .then(() => {
+                                                        setIsLoading(false);
+                                                    })
+                                                    .catch((error) => {
+                                                        setIsLoading(false);
+                                                        alert(error);
+                                                    })
+                                            }
+
+                                            setIsLoading(true);
+                                            firebase
+                                                .firestore()
+                                                .collection('posts')
+                                                .doc(props.postID)
+                                                .set(
+                                                    {
+                                                        likes: likes + 1,
+                                                        likes_from: [...likerList, props.userID]
+                                                    },
+
+                                                    { merge: true }
+                                                )
+                                                .then(() => {
+                                                    setIsLoading(false);
+                                                })
+                                                .catch((error) => {
+                                                    setIsLoading(false);
+                                                    alert(error);
+                                                })
+
+                                        }}
+                                    />
+                                }
+
                                 <Button
                                     type="solid"
                                     title={commentButtonTitle}
