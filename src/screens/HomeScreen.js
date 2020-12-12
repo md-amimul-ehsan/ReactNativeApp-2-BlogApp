@@ -93,7 +93,6 @@ const HomeScreen = (props) => {
                       creating_date: moment().format("DD MMM, YYYY"),
                       comments: [],
                       likes_from: [],
-                      likes: 0,
                     })
                     .then(() => {
                       setIsLoading(false);

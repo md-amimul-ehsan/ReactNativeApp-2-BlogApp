@@ -18,7 +18,6 @@ import "firebase/firestore";
 
 const PostCard = (props) => {
     //console.log(props);
-    const [likes, setLikes] = useState(0);
     const [commentList, setCommentList] = useState([]);
     const [notificationList, setNotificationList] = useState([]);
     const [likerList, setLikerList] = useState([]);
@@ -33,7 +32,6 @@ const PostCard = (props) => {
             .doc(props.postID)
             .onSnapshot((querySnapShot) => {
                 setIsLoading(false);
-                setLikes(querySnapShot.data().likes);
                 setCommentList(querySnapShot.data().comments);
                 setLikeStatus(querySnapShot.data().likes_from.includes(props.userID));
                 setLikerList(querySnapShot.data().likes_from);
@@ -68,7 +66,7 @@ const PostCard = (props) => {
     let commentButtonTitle = "  Comment (20)";
     commentButtonTitle = " Comment (".concat(commentList.length.toString()).concat(")");
     let likeButtonTitle = "  Like (11)";
-    likeButtonTitle = " Like (".concat(likes.toString()).concat(")");
+    likeButtonTitle = " Like (".concat(likerList.length.toString()).concat(")");
     const navigation = useNavigation();
 
     if (isLoading) {
@@ -143,7 +141,6 @@ const PostCard = (props) => {
                                                 .doc(props.postID)
                                                 .set(
                                                     {
-                                                        likes: likes - 1,
                                                         likes_from: likerList
                                                     },
                                                     { merge: true }
@@ -205,7 +202,6 @@ const PostCard = (props) => {
                                                 .doc(props.postID)
                                                 .set(
                                                     {
-                                                        likes: likes + 1,
                                                         likes_from: [...likerList, props.userID]
                                                     },
 
